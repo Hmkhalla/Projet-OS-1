@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 #define INIT_CAPACITY 5
 
 typedef struct
@@ -15,17 +16,17 @@ typedef struct
 /* inserer_noeud: insère un noeud avec la valeur passée en paramètre */
 player* add_player(player* table, int id, float score)
 {
-	if (id <= table->len){
-		table[id-1].id = id;
-		table[id-1].score += score;
-		if (score) table[id-1].victories += score;
-	}else{
+	if (id > table->len){
 		table = (player*) realloc(table, id*sizeof(player));
 		table->len = id;
-		table[id-1].id = id;
-		table[id-1].score += score;
-		if (score) table[id-1].victories += score;
 	}
+	if (table[id-1].id != id){
+		table[id-1].id = id;
+		table[id-1].score = 0;
+		table[id-1].victories = 0;
+	}
+	table[id-1].score += score;
+	if (score) table[id-1].victories += score;
 	return table;
 }
 
@@ -52,23 +53,41 @@ player* init_memory()
 
 /* imprimer_liste: imprime la liste à l'écran */
 void imprimer_liste(player* table){
-	int i = 0;
-	while(i<table->len){
-		printf("%i %f %i\n", table[i].id, table[i].score, table[i].victories);
-		i++;
-	}
+	for (int i = 0;i<table->len;i++)  printf("%i %f %i\n", table[i].id, table[i].score, table[i].victories);
 	printf("size is %i\n", table->len);
 }
 
-int main(){
-	player* table = init_memory();
-	add_player(table, 3, 1);
-	add_player(table, 3, 0);
-	add_player(table, 3, 0.5);
-	add_player(table, 3, 1);
-	add_player(table, 5, 1);
-	table = add_player(table, 10, 1);
-	imprimer_liste(table);
-	free(table);
-	return 0;
+int store(FILE* output, player* table){
+	for (int i = 0;i<table->len;i++)  fprintf(output, "%i %f %i\n", table[i].id, table[i].score, table[i].victories);
+	return ferror(output);
+}
+
+int main(int argc, char**argv){
+	int x, y; 
+	float z;
+	FILE* fin;
+	FILE* out;
+	player* table = NULL;
+	/*player* table =  init_memory(); Cette écriture cause des erreurs, pourquoi ? */
+	if (argc != 3) return EXIT_FAILURE;
+	else{
+		const char* IPATH = argv[1];
+		const char* OPATH = argv[2];
+		printf("%s\n%s\n", IPATH, OPATH);
+		if (fin = fopen(IPATH, "r")){
+			table = init_memory();
+			for (int i=0; fscanf(fin, "%d %d %f", &x,&y,&z) != EOF; i++){
+				add_player(table, x, z);
+				add_player(table, y, fabsf(z-1));
+			};
+			imprimer_liste(table);
+			fclose(fin);
+			if(out = fopen(OPATH, "w")){
+				printf("%d\n",store(out, table));
+				fclose(out);
+			}
+		}else  return EXIT_FAILURE;
+		free(table);
+		printf("rip ?\n");
+	}
 }
