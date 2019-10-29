@@ -18,11 +18,12 @@ typedef struct
 
 void delete_table(structArray* table)
 {
+	free(table->table);
 	free(table);
 }
 
 /* inserer_noeud: insère un noeud avec la valeur passée en paramètre */
-Table* add_player(structArray* Table, int id, float score)
+structArray* add_player(structArray* Table, int id, float score)
 {
 	if (id > Table->len){
 		if ((Table->table = (player*) realloc(Table->table, id*sizeof(player))) == NULL)
@@ -42,10 +43,12 @@ Table* add_player(structArray* Table, int id, float score)
 	return Table;
 }
 
-Table* init_memory()
+structArray* init_memory()
 {
-	Table* Table = NULL;
-	if (((Table = malloc(sizeof(Table))) == NULL) && ((Table->table = malloc(sizeof(player)*INIT_CAPACITY)) == NULL))
+	structArray* Table = NULL;
+	//structArray* Table = (structArray*)malloc(sizeof(structArray));
+	//Table->table = (player*) malloc(sizeof(player)*INIT_CAPACITY);
+	if (((Table = (structArray*)malloc(sizeof(structArray))) == NULL) && ((Table->table = (player*) malloc(sizeof(player)*INIT_CAPACITY)) == NULL))
 		{
 			delete_table(Table);
 			exit(1);
@@ -54,12 +57,12 @@ Table* init_memory()
 	return Table;
 }
 
-void imprimer_liste(Table* Table){
-	for (int i = 0;i< Table->len;i++)  printf("%i %f %i\n", Table->table[i].id, Table->table[i].score, Table->table[i].victories);
+void imprimer_liste(structArray* Table){
+	for (int i = 0;i< Table->len;i++)  printf("%i %.1f %i\n", Table->table[i].id, Table->table[i].score, Table->table[i].victories);
 	printf("size is %i\n", Table->len);
 }
 
-int store(FILE* output, Table* Table){
-	for (int i = 0;i< Table->len;i++)  fprintf(output, "%i %f %i\n", Table->table[i].id, Table->table[i].score, Table->table[i].victories);
+int store(FILE* output, structArray* Table){
+	for (int i = 0;i< Table->len;i++)  fprintf(output, "%i %.1f %i\n", Table->table[i].id, Table->table[i].score, Table->table[i].victories);
 	return ferror(output);
 }

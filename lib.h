@@ -13,17 +13,17 @@ typedef struct
 {
 	int len;
 	player* table;
-} Table;
+} structArray;
 
-Table* add_player(Table* table, int id, float score);
+structArray* add_player(structArray* table, int id, float score);
 
-Table* init_memory();
+structArray* init_memory();
 
-void imprimer_liste(Table* table);
+void imprimer_liste(structArray* table);
 
-int store(FILE* output, Table* table);
+int store(FILE* output, structArray* table);
 
-void delete_table(Table* table);
+void delete_table(structArray* table);
 
 
 #endif

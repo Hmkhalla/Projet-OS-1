@@ -9,7 +9,7 @@ int main(int argc, char**argv){
 	float z;
 	FILE* fin = NULL;
 	FILE* out = NULL;
-	Table* table = NULL;
+	structArray* table = NULL;
 	if (argc != 3) return EXIT_FAILURE;
 	else{
 		const char* IPATH = argv[1];
