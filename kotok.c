@@ -14,21 +14,20 @@ int main(int argc, char**argv){
 	else{
 		const char* IPATH = argv[1];
 		const char* OPATH = argv[2];
-		printf("%s\n%s\n", IPATH, OPATH);
 		if ((fin = fopen(IPATH, "r"))){
 			table = init_memory();
 			for (int i=0; fscanf(fin, "%d %d %f", &x,&y,&z) != EOF; i++){
 				add_player(table, x, z);
 				add_player(table, y, fabsf(z-1));
 			};
-			imprimer_liste(table);
+			//imprimer_liste(table);
 			fclose(fin);
 			if((out = fopen(OPATH, "w"))){
-				printf("%d\n",store(out, table));
+				store(out, table);
 				fclose(out);
 			}
+			delete_table(table);
+			return EXIT_SUCCESS;
 		}else  return EXIT_FAILURE;
-		delete_table(table);
-		printf("rip ?\n");
 	}
 }

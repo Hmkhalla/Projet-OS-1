@@ -14,15 +14,15 @@ typedef struct
 {
 	int len;
 	player* table;
-} Table;
+} structArray;
 
-void delete_table(Table* table)
+void delete_table(structArray* table)
 {
 	free(table);
 }
 
 /* inserer_noeud: insère un noeud avec la valeur passée en paramètre */
-Table* add_player(Table* Table, int id, float score)
+Table* add_player(structArray* Table, int id, float score)
 {
 	if (id > Table->len){
 		if ((Table->table = (player*) realloc(Table->table, id*sizeof(player))) == NULL)
